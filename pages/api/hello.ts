@@ -16,7 +16,6 @@ export default async function handler(
   if (session) {
 
     const {accessToken, apiDomain } = session;
-    console.log(session)
 
     const data = await fetch(`${apiDomain}/api/v1/users/me`, {
       method: 'GET',
