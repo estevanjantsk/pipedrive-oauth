@@ -3,7 +3,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { getSession } from "next-auth/react"
 
 type Data = {
-  content?: string,
+  content?: object,
   error?: string
 }
 
@@ -14,8 +14,19 @@ export default async function handler(
   const session = await getSession({ req })
 
   if (session) {
-    res.send({ content: "This is protected content. You can access this content because you are signed in.",
+
+    const {accessToken, apiDomain } = session;
+    console.log(session)
+
+    const data = await fetch(`${apiDomain}/api/v1/users/me`, {
+      method: 'GET',
+      headers: {
+        'Authorization': 'Bearer ' + accessToken
+      }
     })
+    .then(res => res.json());
+
+    res.send(data)
   } else {
     res.send({
       error: "You must be sign in to view the protected content on this page.",
